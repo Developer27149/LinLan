@@ -1,14 +1,17 @@
 import { DEFAULT_WALLPAPER, SEARCH_ENGINE, WALLPAPER } from "~newtab/constants"
 import { ToastContainer, toast } from "react-toastify"
+import { setDataIntoStorage, sleepDelay } from "~utils"
 import { useEffect, useRef, useState } from "react"
 
 import { getWallpaperBase64FromUrl } from "~utils/image"
-import { sleepDelay } from "~utils"
 import { useStorage } from "@plasmohq/storage"
 
 function InitPage() {
   const [searchEngine, setSearchEngine] = useStorage(SEARCH_ENGINE, "Google")
-  const [wallpaper, setWallpaper] = useStorage(WALLPAPER, DEFAULT_WALLPAPER)
+  const [wallpaper, setWallpaper] = useStorage(
+    { key: WALLPAPER, area: "local" },
+    DEFAULT_WALLPAPER
+  )
   const [isFinish, setIsFinish] = useState(false)
 
   useEffect(() => {
@@ -26,10 +29,6 @@ function InitPage() {
         "data:application/octet-stream;base64,",
         ""
       )}`
-      console.log(base64)
-
-      console.log("res", res)
-
       setWallpaper(res)
     })()
   }, [])

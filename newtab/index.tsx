@@ -22,7 +22,10 @@ function IndexNewtab() {
   const [bingSuggestion, setBingSuggestion] = useAtom(bingSuggestionRecordAtom)
   const [config, setConfig] = useAtom(basicConfigAtom)
   const [hasInit, setHasInit] = useState(false)
-  const [wallpaper] = useStorage(WALLPAPER, DEFAULT_WALLPAPER)
+  const [wallpaper] = useStorage(
+    { key: WALLPAPER, area: "local" },
+    DEFAULT_WALLPAPER
+  )
   console.log("wallpaper:", wallpaper)
 
   // 初始化壁纸
