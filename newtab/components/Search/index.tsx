@@ -4,6 +4,7 @@ import { bingSuggestionRecordAtom, searchEngineAtom } from "~stores"
 
 import { FcGoogle } from "react-icons/fc"
 import { debounce } from "lodash-es"
+import { motion } from "framer-motion"
 import { useAtom } from "jotai"
 
 const iconMapRecord = {
@@ -55,7 +56,17 @@ function Search() {
     })
   }, [keyword])
   return (
-    <div className="fixed top-24 left-[50%] -translate-x-[50%] bg-white z-1 rounded-lg p-1">
+    <motion.div
+      initial={{
+        opacity: 0,
+        top: 40
+      }}
+      animate={{
+        opacity: 1,
+        top: "4rem"
+      }}
+      transition="delay-150"
+      className="fixed left-[50%] -translate-x-[50%] bg-white z-1 rounded-lg p-1 focus:shadow-sm">
       <div className="absolute right-3 top-[15px]">
         {iconMapRecord[searchEngine] && iconMapRecord[searchEngine]}
       </div>
@@ -65,7 +76,7 @@ function Search() {
         // value={keyword}
         onChange={onChangeKeyword}
       />
-    </div>
+    </motion.div>
   )
 }
 

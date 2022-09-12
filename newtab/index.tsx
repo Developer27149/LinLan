@@ -26,19 +26,12 @@ function IndexNewtab() {
     { key: WALLPAPER, area: "local" },
     DEFAULT_WALLPAPER
   )
-  console.log("wallpaper:", wallpaper)
+  console.log("wallpaper:", wallpaper, wallpaper === DEFAULT_WALLPAPER)
 
-  // 初始化壁纸
+  // 初始化
   const [basicConfig] = useStorage<IBasicConfig>(BASIC_CONFIG, {
     lastUpdateTime: new Date().valueOf()
   })
-
-  // useEffect(() => {
-  //   // 初始化基础设置
-  //   getItemByKeyFromStorage(BASIC_CONFIG).then((data) => {
-  //     setConfig({ lastUpdateTime: new Date().valueOf(), ...data })
-  //   })
-  // }, [])
 
   useEffect(() => {
     // 观察store
@@ -46,7 +39,7 @@ function IndexNewtab() {
     setDataIntoStorage({ [BING_SUGGESTION]: bingSuggestion })
   }, [bingSuggestion])
 
-  if (wallpaper === DEFAULT_WALLPAPER) return <InitPage />
+  // if (wallpaper === DEFAULT_WALLPAPER) return <InitPage />
   return (
     <div className="h-screen w-screen flex justify-center items-center">
       <Wallpaper />
