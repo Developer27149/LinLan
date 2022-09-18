@@ -68,7 +68,22 @@ function Search() {
     }
     // 添加新的缓存
     getSuggestionFc.current?.(keyword.trim(), (dataArr: any[]) => {
-      setBingSuggestion({ ...bingSuggestion, [keyword]: dataArr })
+      const keys = Object.keys(bingSuggestion)
+      let newSuggestionList = {}
+      if (keys.length > 50) {
+        keys.map((k, idx) => {
+          // 2022年09月18日23:00:30 好困
+          // 每次清掉两个，虽然不是 Map 那样的清掉最旧的，但是也暂时可以了
+          if (idx > 1) {
+            newSuggestionList[k] = bingSuggestion[k]
+          } else {
+            newSuggestionList[keyword] = dataArr
+          }
+        })
+      } else {
+        newSuggestionList = { ...bingSuggestion, [keyword]: dataArr }
+      }
+      setBingSuggestion(newSuggestionList)
       setSuggestList(dataArr)
     })
   }, [keyword])
