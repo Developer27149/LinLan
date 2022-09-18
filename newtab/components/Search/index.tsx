@@ -6,11 +6,12 @@ import { bingSuggestionRecordAtom, searchEngineAtom, useStore } from "~stores"
 
 import { FcGoogle } from "react-icons/fc"
 import SearchEngineOption from "./SearchEngineOption"
+import SearchKeywordOption from "./SearchKeywordOption"
 import { TbBrandBing } from "react-icons/tb"
 import clsx from "clsx"
 import { debounce } from "lodash-es"
-import { generateSearchUrl } from "~utils/search"
 import { motion } from "framer-motion"
+import { onSearchKeyword } from "~utils/search"
 import { useAtom } from "jotai"
 
 export const iconMapRecord = {
@@ -57,7 +58,6 @@ function Search() {
   }, [])
 
   useEffect(() => {
-    console.log("keyword :", keyword, keyword.length)
     if (keyword.length === 0) return
     // 检查缓存，无缓存则重新请求
     if (bingSuggestion[keyword]) {
@@ -75,8 +75,11 @@ function Search() {
 
   const onSearch = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      const url = generateSearchUrl(basicConfig.searchEngine, keyword)
-      window.open(url, basicConfig?.openSearchResultStyle)
+      onSearchKeyword(
+        keyword,
+        basicConfig.searchEngine,
+        basicConfig?.openSearchResultStyle
+      )
     }
   }
 
@@ -146,7 +149,7 @@ function Search() {
         onClick={(e) => e.stopPropagation()}
       />
       {showSearchOption && <SearchEngineOption />}
-      {}
+      {suggestList.length > 0 && <SearchKeywordOption options={suggestList} />}
     </motion.div>
   )
 }

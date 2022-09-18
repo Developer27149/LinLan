@@ -1,4 +1,4 @@
-import { ESearchEngine } from "~newtab/interfaces"
+import { EOpenNewWindowForSearch, ESearchEngine } from "~newtab/interfaces"
 
 export const generateSearchUrl = (
   targetEngine: ESearchEngine,
@@ -11,4 +11,13 @@ export const generateSearchUrl = (
     [ESearchEngine.baidu]: `https://www.baidu.com/s?wd=${keyword}`
   }
   return recordMap[targetEngine]
+}
+
+export const onSearchKeyword = (
+  keyword: string,
+  searchEngine: ESearchEngine,
+  openStyle: EOpenNewWindowForSearch
+) => {
+  const url = generateSearchUrl(searchEngine, keyword)
+  window.open(url, openStyle)
 }

@@ -1,13 +1,23 @@
-import type { HTMLAttributes } from "react"
+import type { HTMLAttributes, SetStateAction } from "react"
+
+import { createSecretKey } from "crypto"
 import { motion } from "framer-motion"
+import { onSearchKeyword } from "~utils/search"
 import { useStore } from "~stores"
 
 interface IProps extends HTMLAttributes<HTMLDivElement> {
   options: string[]
 }
 
-function SearchKeywordOption({ options, ...other }: IProps) {
+function SearchKeywordOption({ options, setKeyword, ...other }: IProps) {
   const { basicConfig, setBasicConfig } = useStore()
+  const onSearch = (value: string) => {
+    onSearchKeyword(
+      value,
+      basicConfig.searchEngine,
+      basicConfig.openSearchResultStyle
+    )
+  }
   return (
     <motion.div
       initial={{
@@ -19,12 +29,17 @@ function SearchKeywordOption({ options, ...other }: IProps) {
         scale: 1
       }}
       {...other}
-      className="flex gap-2 items-center bg-gray-600 text-white p-2 ml-1 rounded-sm mr-1.5 mb-1">
-      {Object.entries(iconMapRecord).map(([key, value], idx) => (
-        <button key={idx} onClick={() => onChangeSearchOption(key)}>
-          {value}
-        </button>
-      ))}
+      className="flex flex-col gap-2 p-2 ">
+      <ul>
+        {options.map((value) => (
+          <li
+            key={value}
+            onClick={() => onSearch(value)}
+            className="cursor-pointer hover:bg-purple-100 p-1 rounded-sm">
+            {value}
+          </li>
+        ))}
+      </ul>
     </motion.div>
   )
 }
