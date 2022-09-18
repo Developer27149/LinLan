@@ -1,12 +1,12 @@
 import { DEFAULT_WALLPAPER, WALLPAPER } from "~newtab/constants"
 
+import { getItemByKeyFromStorage } from "~utils"
 import { useAtom } from "jotai"
 import { useStorage } from "@plasmohq/storage"
 import { wallpaperAtom } from "~stores"
 
 function wallpaper() {
-  // const [wallpaper, setWallpaper] = useAtom<string>(wallpaperAtom)
-  const [wallpaper] = useStorage(WALLPAPER, DEFAULT_WALLPAPER)
+  const [wallpaper] = useStorage({ key: WALLPAPER, area: "local" })
 
   return (
     <div

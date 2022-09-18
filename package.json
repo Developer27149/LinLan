@@ -1,8 +1,8 @@
 {
-  "name": "demo",
-  "displayName": "Demo",
+  "name": "LinLan",
+  "displayName": "LinLan",
   "version": "0.0.0",
-  "description": "A basic Plasmo extension.",
+  "description": "极简的浏览器新标签页扩展应用",
   "author": "youyi",
   "packageManager": "npm@8.5.0",
   "scripts": {
@@ -13,8 +13,8 @@
     "@plasmohq/storage": "^0.9.1",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.7",
+    "clsx": "^1.2.1",
     "framer-motion": "^7.3.2",
-    "jotai": "^1.8.3",
     "lodash-es": "^4.17.21",
     "plasmo": "0.53.0",
     "react": "18.2.0",

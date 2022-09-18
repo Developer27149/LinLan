@@ -7,11 +7,11 @@ import {
   DEFAULT_WALLPAPER,
   WALLPAPER
 } from "./constants"
-import { basicConfigAtom, bingSuggestionRecordAtom } from "~stores"
+import { EArea, ESearchEngine, IBasicConfig } from "./interfaces"
+import { basicConfigAtom, bingSuggestionRecordAtom, useStore } from "~stores"
 import { getItemByKeyFromStorage, setDataIntoStorage } from "~utils"
 import { useEffect, useState } from "react"
 
-import type { IBasicConfig } from "./interfaces"
 import InitPage from "./components/Init"
 import Search from "./components/Search"
 import Wallpaper from "./components/Wallpaper"
@@ -19,27 +19,29 @@ import { useAtom } from "jotai"
 import { useStorage } from "@plasmohq/storage"
 
 function IndexNewtab() {
-  const [bingSuggestion, setBingSuggestion] = useAtom(bingSuggestionRecordAtom)
-  const [config, setConfig] = useAtom(basicConfigAtom)
-  const [hasInit, setHasInit] = useState(false)
-  const [wallpaper] = useStorage(
-    { key: WALLPAPER, area: "local" },
-    DEFAULT_WALLPAPER
-  )
-  console.log("wallpaper:", wallpaper, wallpaper === DEFAULT_WALLPAPER)
-
-  // 初始化
-  const [basicConfig] = useStorage<IBasicConfig>(BASIC_CONFIG, {
-    lastUpdateTime: new Date().valueOf()
-  })
+  const [loading, setLoading] = useState(true)
+  const { wallpaper, basicConfig, setBasicConfig } = useStore()
 
   useEffect(() => {
-    // 观察store
-    window.bs = bingSuggestion
-    setDataIntoStorage({ [BING_SUGGESTION]: bingSuggestion })
-  }, [bingSuggestion])
-
-  // if (wallpaper === DEFAULT_WALLPAPER) return <InitPage />
+    // 获取壁纸数据
+    getItemByKeyFromStorage(WALLPAPER).then((value) => {
+      setLoading(false)
+    })
+    // TODO:发布之前去掉这个方法
+    // 初始化提供一个重置状态的测试方法
+    window.reset = () =>
+      setBasicConfig({
+        ...basicConfig,
+        hadInit: false,
+        searchEngine: ESearchEngine.google
+      })
+  }, [])
+  useEffect(() => {
+    // TODO:调试变量
+    window.b = basicConfig
+  }, [basicConfig])
+  if (loading) return null
+  if (basicConfig.hadInit === false) return <InitPage />
   return (
     <div className="h-screen w-screen flex justify-center items-center">
       <Wallpaper />

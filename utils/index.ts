@@ -1,15 +1,23 @@
-export const getItemByKeyFromStorage = async (key: string) => {
+import { EArea } from "~newtab/interfaces"
+
+export const getItemByKeyFromStorage = async (
+  key: string,
+  area?: EArea = EArea.local
+) => {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.get(key, (data, err) => {
+    chrome.storage[area].get(key, (data, err) => {
       if (err) reject(err)
       resolve(data)
     })
   })
 }
 
-export const setDataIntoStorage = async (data: Record<string, any>) => {
+export const setDataIntoStorage = async (
+  data: Record<string, any>,
+  area?: EArea = EArea.local
+) => {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.set(data, (data, err) => {
+    chrome.storage[area].set(data, (data, err) => {
       if (err) reject(err)
       resolve(data)
     })

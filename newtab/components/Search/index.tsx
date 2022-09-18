@@ -1,32 +1,46 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react"
+import { EOpenNewWindowForSearch, ESearchEngine } from "~newtab/interfaces"
+import { RiBaiduFill, RiZhihuFill } from "react-icons/ri"
 import { bingSuggestionApi, request } from "~request"
-import { bingSuggestionRecordAtom, searchEngineAtom } from "~stores"
+import { bingSuggestionRecordAtom, searchEngineAtom, useStore } from "~stores"
 
 import { FcGoogle } from "react-icons/fc"
+import SearchEngineOption from "./SearchEngineOption"
+import { TbBrandBing } from "react-icons/tb"
+import clsx from "clsx"
 import { debounce } from "lodash-es"
+import { generateSearchUrl } from "~utils/search"
 import { motion } from "framer-motion"
 import { useAtom } from "jotai"
 
-const iconMapRecord = {
-  google: <FcGoogle />
+export const iconMapRecord = {
+  [ESearchEngine.google]: <FcGoogle />,
+  [ESearchEngine.baidu]: <RiBaiduFill />,
+  [ESearchEngine.bing]: <TbBrandBing />,
+  [ESearchEngine.zhihu]: <RiZhihuFill />
 }
 
 function Search() {
-  const [searchEngine, setSearchEngine] = useAtom(searchEngineAtom)
-  const [bingSuggestion, setBingSuggestion] = useAtom(bingSuggestionRecordAtom)
+  // const [searchEngine, setSearchEngine] = useAtom(searchEngineAtom)
+  // const [bingSuggestion, setBingSuggestion] = useAtom(bingSuggestionRecordAtom)
+  const { basicConfig, setBasicConfig, setBingSuggestion, bingSuggestion } =
+    useStore()
   const [keyword, setKeyword] = useState("")
   const [suggest, setSuggest] = useState([])
+  const dragElemRef = useRef<HTMLDivElement>()
+  const [hasInit, setHasInit] = useState(false)
+
+  const [showSearchOption, setShowSearchOption] = useState(false)
 
   const getSuggestionFc = useRef(
     debounce(async (query: string, callback?: () => void) => {
       const res = await bingSuggestionApi(query)
       console.log(res)
       callback?.(res)
-    }, 1 * 1000)
+    }, 1.5 * 1000)
   )
 
   const onChangeKeyword = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value)
     setKeyword(e.target.value)
   }
 
@@ -51,31 +65,84 @@ function Search() {
       console.log(bingSuggestion[keyword])
       return
     }
-    getSuggestionFc.current?.(keyword.trim(), (dataArr: any[]) => {
-      setBingSuggestion((record) => ({ ...record, [keyword]: dataArr }))
+    // 添加新的缓存
+    getSuggestionFc._self?.(keyword.trim(), (dataArr: any[]) => {
+      setBingSuggestion({ ...bingSuggestion, [keyword]: dataArr })
     })
   }, [keyword])
+
+  const onSearch = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const url = generateSearchUrl(basicConfig.searchEngine, keyword)
+      window.open(url, basicConfig?.openSearchResultStyle)
+    }
+  }
+
+  useEffect(() => {
+    // 点击document事件将保证不显式搜索引擎选项
+    document.addEventListener("click", () => {
+      setShowSearchOption(false)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (
+      basicConfig.searchBoxX &&
+      basicConfig.searchBoxY &&
+      hasInit === false &&
+      dragElemRef.current &&
+      (~~basicConfig.searchBoxX.replace("px", "") < window.innerWidth) &
+        (~~basicConfig.searchBoxY.replace("px", "") < window.innerHeight)
+    ) {
+      // 设置最初的位置
+      dragElemRef.current.style.top = basicConfig.searchBoxY
+      dragElemRef.current.style.left = basicConfig.searchBoxX
+      setHasInit(true)
+    }
+  }, [basicConfig, hasInit])
+
+  const onDragEnd = (_: any) => {
+    if (dragElemRef.current) {
+      const { x, y } = dragElemRef.current.getBoundingClientRect()
+      setBasicConfig({
+        ...basicConfig,
+        searchBoxX: `${x}px`,
+        searchBoxY: `${y}px`
+      })
+    }
+  }
+
   return (
     <motion.div
       initial={{
         opacity: 0,
-        top: 40
+        y: "-100"
       }}
       animate={{
         opacity: 1,
-        top: "4rem"
+        y: 0
       }}
+      drag={true}
+      onDragEnd={onDragEnd}
+      dragMomentum={false}
       transition="delay-150"
-      className="fixed left-[50%] -translate-x-[50%] bg-white z-1 rounded-lg p-1 focus:shadow-sm">
-      <div className="absolute right-3 top-[15px]">
-        {iconMapRecord[searchEngine] && iconMapRecord[searchEngine]}
+      className={clsx("fixed bg-white z-1 rounded-lg p-1 focus:shadow-sm")}
+      ref={dragElemRef}>
+      <div
+        className="absolute right-3 top-[16px]"
+        onMouseOver={() => setShowSearchOption(true)}>
+        {iconMapRecord[basicConfig?.searchEngine] &&
+          iconMapRecord[basicConfig.searchEngine]}
       </div>
       <input
-        className="h-8 leading-8 pl-2 outline-none rounded-sm xl:w-[400px] sm:w-[380px] w-[40vw]"
+        className="h-7 my-1 leading-8 pl-2 outline-none rounded-sm xl:w-[400px] sm:w-[380px] w-[40vw]"
         placeholder="搜索"
         // value={keyword}
         onChange={onChangeKeyword}
+        onKeyDown={onSearch}
+        onClick={(e) => e.stopPropagation()}
       />
+      {showSearchOption && <SearchEngineOption />}
     </motion.div>
   )
 }
