@@ -3,8 +3,8 @@ export interface IBasicConfig {
   hadInit?: boolean
   searchEngine: ESearchEngine
   openSearchResultStyle: EOpenNewWindowForSearch
-  searchBoxX?: string
-  searchBoxY?: string
+  searchBoxX?: number
+  searchBoxY?: number
 }
 
 export enum EArea {

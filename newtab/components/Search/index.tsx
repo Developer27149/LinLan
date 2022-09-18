@@ -26,7 +26,7 @@ function Search() {
   const { basicConfig, setBasicConfig, setBingSuggestion, bingSuggestion } =
     useStore()
   const [keyword, setKeyword] = useState("")
-  const [suggest, setSuggest] = useState([])
+  const [suggestList, setSuggestList] = useState([])
   const dragElemRef = useRef<HTMLDivElement>()
   const [hasInit, setHasInit] = useState(false)
 
@@ -63,11 +63,13 @@ function Search() {
     if (bingSuggestion[keyword]) {
       console.log("已存在关键字", keyword)
       console.log(bingSuggestion[keyword])
+      setSuggestList(bingSuggestion[keyword])
       return
     }
     // 添加新的缓存
-    getSuggestionFc._self?.(keyword.trim(), (dataArr: any[]) => {
+    getSuggestionFc.current?.(keyword.trim(), (dataArr: any[]) => {
       setBingSuggestion({ ...bingSuggestion, [keyword]: dataArr })
+      setSuggestList(dataArr)
     })
   }, [keyword])
 
@@ -91,12 +93,11 @@ function Search() {
       basicConfig.searchBoxY &&
       hasInit === false &&
       dragElemRef.current &&
-      (~~basicConfig.searchBoxX.replace("px", "") < window.innerWidth) &
-        (~~basicConfig.searchBoxY.replace("px", "") < window.innerHeight)
+      (~~basicConfig.searchBoxX < 100) & (~~basicConfig.searchBoxY < 100)
     ) {
       // 设置最初的位置
-      dragElemRef.current.style.top = basicConfig.searchBoxY
-      dragElemRef.current.style.left = basicConfig.searchBoxX
+      dragElemRef.current.style.left = `${basicConfig.searchBoxX}%`
+      dragElemRef.current.style.top = `${basicConfig.searchBoxY}%`
       setHasInit(true)
     }
   }, [basicConfig, hasInit])
@@ -104,10 +105,12 @@ function Search() {
   const onDragEnd = (_: any) => {
     if (dragElemRef.current) {
       const { x, y } = dragElemRef.current.getBoundingClientRect()
+      console.log(x / window.innerWidth, y / window.innerHeight)
+
       setBasicConfig({
         ...basicConfig,
-        searchBoxX: `${x}px`,
-        searchBoxY: `${y}px`
+        searchBoxX: (x / window.innerWidth) * 100,
+        searchBoxY: (y / window.innerHeight) * 100
       })
     }
   }
@@ -143,6 +146,7 @@ function Search() {
         onClick={(e) => e.stopPropagation()}
       />
       {showSearchOption && <SearchEngineOption />}
+      {}
     </motion.div>
   )
 }
