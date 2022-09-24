@@ -11,7 +11,6 @@ import { setDataIntoStorage, sleepDelay } from "~utils"
 import Button from "../Button"
 import { GrLinkNext } from "react-icons/gr"
 import { getWallpaperBase64FromUrl } from "~utils/image"
-import { useStorage } from "@plasmohq/storage"
 import { useStore } from "~stores"
 
 function InitPage() {
@@ -50,7 +49,7 @@ function InitPage() {
       )}`
       setWallpaper(res)
     })()
-    console.log(basicConfig)
+    console.log("basicConfig:", basicConfig)
   }, [])
 
   const onChangeSearchEngine = (e: ChangeEvent<HTMLInputElement>) => {

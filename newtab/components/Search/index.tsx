@@ -43,10 +43,14 @@ function Search() {
 
   const onChangeKeyword = (e: ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value)
+    if (e.target.value.trim().length === 0) {
+      setSuggestList([])
+    }
   }
 
   // 定义一个全局函数
   useEffect(() => {
+    // TODO:待清理
     window.bing = {
       sug: function (json) {
         console.log(json)
@@ -54,6 +58,14 @@ function Search() {
     }
     window.sug = function (json) {
       console.log("sug fc:", json)
+    }
+    window.getW = () => {
+      chrome.storage.local.get("wallpaper", (items, err) => {
+        if (err) {
+          console.log("error:", err)
+        }
+        console.log("items:", items)
+      })
     }
   }, [])
 
@@ -88,7 +100,9 @@ function Search() {
     })
   }, [keyword])
 
-  const onSearch = (e: KeyboardEvent<HTMLInputElement>) => {
+  const onSearchKeyDown = (e: KeyboardEvent) => {
+    e.stopPropagation()
+    // e.preventDefault()
     if (e.key === "Enter") {
       onSearchKeyword(
         keyword,
@@ -160,7 +174,7 @@ function Search() {
         placeholder="搜索"
         // value={keyword}
         onChange={onChangeKeyword}
-        onKeyDown={onSearch}
+        onKeyDown={onSearchKeyDown}
         onClick={(e) => e.stopPropagation()}
       />
       {showSearchOption && <SearchEngineOption />}

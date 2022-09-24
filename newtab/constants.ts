@@ -4,4 +4,5 @@ export const DEFAULT_WALLPAPER =
 export const BING_SUGGESTION = "bingSuggestion"
 export const SEARCH_ENGINE = "searchEngine"
 export const WALLPAPER = "wallpaper"
+export const WALLPAPER_BING_LIST = "bing_list"
 export const BASIC_CONFIG = "basicConfig"
