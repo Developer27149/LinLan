@@ -161,7 +161,9 @@ function Search() {
       onDragEnd={onDragEnd}
       dragMomentum={false}
       transition="delay-150"
-      className={clsx("fixed bg-white z-1 rounded-lg p-1 focus:shadow-sm")}
+      className={clsx(
+        "fixed bg-white z-1 rounded-lg p-1 focus:shadow-sm cursor-move"
+      )}
       ref={dragElemRef}>
       <div
         className="absolute right-3 top-[16px]"

@@ -5,6 +5,7 @@ import type { IThisWeekData } from "~newtab/interfaces"
 import Loading from "../Loading"
 import { WALLPAPER } from "~newtab/constants"
 import { getThisWeekData } from "~request"
+import { motion } from "framer-motion"
 import { toast } from "react-toastify"
 import { unionWith } from "lodash-es"
 import useQuery from "~newtab/hooks/useQuery"
@@ -100,10 +101,19 @@ function WallpaperList() {
         <Loading />
       ) : (
         <div>
-          <h4 className="font-bold text-lg text-center text-white">
+          <motion.h4
+            initial={{
+              opacity: 0,
+              top: -100
+            }}
+            animate={{
+              opacity: 1,
+              top: 0
+            }}
+            className="font-bold text-lg text-center text-white relative">
             点击即可启用
-          </h4>
-          <div className="grid xl:grid-cols-3 grid-cols-2 gap-8 p-8">
+          </motion.h4>
+          <div className="grid max-w-[90vw] grid-cols-3 gap-8 p-8">
             {data.images.map(({ urlbase }) => {
               return (
                 // <picture key={urlbase}>
