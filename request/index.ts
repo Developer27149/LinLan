@@ -1,3 +1,5 @@
+import type { IThisWeekData } from "~newtab/interfaces"
+
 export const request = {
   get: async function <T>(url: string, headers = {}): Promise<T> {
     try {
@@ -40,9 +42,19 @@ export const bingSuggestionApi = async (query: string) => {
 
     const matchString = matchRecord[0]
     const results = JSON.parse(`{${matchString}}`)?.Results
-    return results.map(i => i.Suggests).flat().map(i => i.Txt)
+    return results
+      .map((i) => i.Suggests)
+      .flat()
+      .map((i) => i.Txt)
   } catch (error) {
     console.log("get bing suggestion fail:", error)
     return []
   }
+}
+
+export const getThisWeekData = async (): Promise<IThisWeekData> => {
+  const data = await fetch(
+    "https://cn.bing.com/HPImageArchive.aspx?format=js&n=6&uhd=1"
+  )
+  return data.json()
 }

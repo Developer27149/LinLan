@@ -14,9 +14,9 @@ import { useEffect, useState } from "react"
 
 import InitPage from "./components/Init"
 import Search from "./components/Search"
+import { ToastContainer } from "react-toastify"
 import Wallpaper from "./components/Wallpaper"
-import { useAtom } from "jotai"
-import { useStorage } from "@plasmohq/storage"
+import WallpaperList from "./components/Wallpaper/WallpaperList"
 
 function IndexNewtab() {
   const [loading, setLoading] = useState(true)
@@ -40,12 +40,15 @@ function IndexNewtab() {
     // TODO:调试变量
     window.b = basicConfig
   }, [basicConfig])
+  // 加载中
   if (loading) return null
   if (basicConfig.hadInit === false) return <InitPage />
   return (
     <div className="h-screen w-screen flex justify-center items-center">
       <Wallpaper />
       <Search />
+      <WallpaperList />
+      <ToastContainer />
     </div>
   )
 }

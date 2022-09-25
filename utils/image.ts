@@ -32,3 +32,6 @@ const handleDownloadCurWallpaper = (url: string) => {
     filename: `岚-${~~(Math.random() * 10000)}.jpeg`
   })
 }
+
+export const shouldFetchNewData = (timestamp: number) =>
+  new Date().toLocaleDateString() !== new Date(timestamp).toLocaleDateString()
