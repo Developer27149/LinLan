@@ -101,18 +101,18 @@ function WallpaperList() {
         <Loading />
       ) : (
         <div>
-          <motion.h4
-            initial={{
-              opacity: 0,
-              top: -100
-            }}
-            animate={{
-              opacity: 1,
-              top: 0
-            }}
-            className="font-bold text-lg text-center text-white relative">
-            点击即可启用
-          </motion.h4>
+          {/* <motion.h4 */}
+          {/*   initial={{ */}
+          {/*     opacity: 0, */}
+          {/*     top: -100 */}
+          {/*   }} */}
+          {/*   animate={{ */}
+          {/*     opacity: 1, */}
+          {/*     top: 0 */}
+          {/*   }} */}
+          {/*   className="font-bold text-lg text-center text-white relative"> */}
+          {/*   点击即可启用 */}
+          {/* </motion.h4> */}
           <div className="grid max-w-[90vw] grid-cols-3 gap-8 p-8">
             {data.images.map(({ urlbase }) => {
               return (
